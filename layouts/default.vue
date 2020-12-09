@@ -7,6 +7,7 @@
 </template>
 
 <script>
+/* eslint-disable no-console */
 import Footer from '../components/Footer.vue'
 import Nav from '../components/Nav.vue'
 

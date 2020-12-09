@@ -1,0 +1,33 @@
+{
+  "exercises": [
+    {
+      "name": "pull up",
+      "muscles": ["back", "lats", "chest", "shoulders"],
+      "keywords": ["bodyweight", "bar", "upperbody"],
+      "id": 100
+    },
+    {
+      "name": "chin up",
+      "muscles": ["back", "biceps", "lats", "chest", "shoulders"],
+      "keywords": ["bodyweight", "bar", "upperbody"],
+      "id": 101
+    },
+    {
+      "name": "muscle up",
+      "muscles": ["back", "lats", "chest", "shoulders", "triceps"],
+      "keywords": ["bodyweight", "bar", "upperbody"],
+      "id": 102
+    },
+    {
+      "name": "bench press",
+      "muscles": ["chest"],
+      "keywords": ["bar", "upperbody", "bench"],
+      "id": 103
+    },
+    {
+      "name": "fly",
+      "muscles": ["chest"],
+      "keywords": ["bar", "upperbody", "bench"]
+    },
+  ]
+}
