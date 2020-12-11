@@ -85,6 +85,47 @@ export const state = () => ({
         },
       ],
     },
+    {
+      day: 'wednesday',
+      exercises: [
+        {
+          name: 'bicycle',
+          duration: '5 min',
+        },
+        {
+          name: 'legs extension',
+          sets: 3,
+          reps: 10,
+          weight: 20,
+        },
+      ],
+    },
+    {
+      day: 'friday',
+      exercises: [],
+    },
+  ],
+  goals: [
+    {
+      goal: 'Bench press 50kg',
+      id: 1,
+      done: false,
+    },
+    {
+      goal: 'Squat 90kg',
+      id: 2,
+      done: true,
+    },
+    {
+      goal: 'Deadlift 70kg',
+      id: 3,
+      done: true,
+    },
+    {
+      goal: 'Do 10 pull ups with 5kg hung',
+      id: 4,
+      done: false,
+    },
   ],
 })
 
@@ -95,8 +136,45 @@ export const getters = {
     })
     return exercises[0]
   },
+  goals: (state) => state.goals,
 }
 
-export const actions = {}
+export const actions = {
+  actDeleteGoal({ commit }, id) {
+    commit('deleteGoal', id)
+  },
+  actEditGoal({ commit }, id) {
+    commit('editGoal', id)
+  },
+  actChangeGoalState({ commit }, id) {
+    commit('changeGoalState', id)
+  },
+  actAddGoal({ commit }, goal) {
+    commit('addGoal', goal)
+  },
+}
 
-export const mutations = {}
+export const mutations = {
+  deleteGoal(state, id) {
+    const index = state.goals.findIndex((goal) => goal.id === id)
+    state.goals.splice(index, 1)
+  },
+  editGoal(state, id) {
+    console.log(id)
+  },
+  changeGoalState(state, id) {
+    const index = state.goals.findIndex((goal) => goal.id === id)
+    state.goals[index].done = !state.goals[index].done
+  },
+  addGoal(state, goal) {
+    const nextId =
+      state.goals
+        .map((goal) => goal.id)
+        .sort()
+        .reverse()[0] + 1
+    state.goals.push({
+      goal,
+      id: nextId,
+    })
+  },
+}
