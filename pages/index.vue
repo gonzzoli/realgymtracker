@@ -194,19 +194,24 @@ export default {
       const previousDays = this.days.slice(0, this.days.indexOf(currentDay))
       const nextDays = this.days.slice(
         this.days.indexOf(currentDay),
-        this.days.lenght
+        this.days.length
       )
       const orderedDays = nextDays.concat(previousDays)
-      console.log(orderedDays)
-
-      orderedDays.forEach((day) => {
+      // iterate over the days to find next workout
+      for (let i = 0; i < orderedDays.length; i++) {
+        const day = orderedDays[i]
         try {
           const routine = JSON.parse(JSON.stringify(this.routineByDay(day)))
-          console.log(routine)
-        } catch (e) {
-          console.log(e)
+          // check if there are exercises on that day
+          // else just catch it
+          if (routine.exercises.length > 0) {
+            this.selectedDay = day
+            break
+          }
+        } catch {
+          console.log(day + ' has no routine.')
         }
-      })
+      }
     },
   },
 }

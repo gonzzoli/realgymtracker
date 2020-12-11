@@ -102,7 +102,56 @@ export const state = () => ({
     },
     {
       day: 'friday',
-      exercises: [],
+      exercises: [
+        {
+          name: 'pull ups',
+          sets: 3,
+          reps: 8,
+          weight: 0,
+        },
+        {
+          name: 'inclined barbell row',
+          sets: 3,
+          reps: 8,
+          weight: 20,
+        },
+        {
+          name: 'renegade row',
+          sets: 3,
+          reps: 10,
+          weight: 7.5,
+        },
+        {
+          name: 'front raises',
+          sets: 3,
+          reps: 10,
+          weight: 7.5,
+        },
+        {
+          name: 'militar press',
+          sets: 3,
+          reps: 10,
+          weight: 15,
+        },
+        {
+          name: 'rear delt fly',
+          sets: 3,
+          reps: 8,
+          weight: 7.5,
+        },
+        {
+          name: 'chin ups',
+          sets: 3,
+          reps: 8,
+          weight: 0,
+        },
+        {
+          name: 'dips',
+          sets: 3,
+          reps: 8,
+          weight: 0,
+        },
+      ],
     },
   ],
   goals: [
