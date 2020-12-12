@@ -2,18 +2,10 @@
   <v-container>
     <v-row>
       <v-col v-if="$vuetify.breakpoint.name != 'xs'" cols="2">
-        <v-list>
-          <v-list-item v-for="day in days" :key="day" class="my-1">
-            <v-btn @click.stop="selectDay(day)">{{ day }}</v-btn>
-          </v-list-item>
-        </v-list>
+        <DaysPanel @daySelection="onSelectDay" />
       </v-col>
-      <v-row v-else justify="center">
-        <v-col v-for="day in days" :key="day" cols="1" class="mx-1">
-          <v-btn icon fab @click.stop="selectDay(day)">{{
-            day[0].toUpperCase()
-          }}</v-btn>
-        </v-col>
+      <v-row v-else>
+        <DaysPanel @daySelection="onSelectDay" />
       </v-row>
       <v-col
         cols="12"
@@ -23,39 +15,10 @@
         md="7"
         class="text-center"
       >
-        <v-container style="background: #fafafa">
-          <h3 v-if="firstOpened == true" class="mb-2">
-            Next Workout:
-            {{ selectedDay[0].toUpperCase() + selectedDay.slice(1) }}
-          </h3>
-          <h3 v-else class="mb-2">
-            {{ selectedDay[0].toUpperCase() + selectedDay.slice(1) }}
-          </h3>
-          <HorizontalExercises
-            v-for="exercise in showAllExercises
-              ? selectedRoutine
-              : selectedRoutine.slice(0, 3)"
-            :key="exercise.name"
-            :exercise="exercise"
-          />
-          <h3 v-if="selectedRoutine.length === 0">
-            No routine set for this day!
-          </h3>
-          <v-btn
-            v-if="selectedRoutine.length > 3 && showAllExercises === false"
-            text
-            class="my-5"
-            @click.stop="showAllExercises = true"
-            >Show All</v-btn
-          >
-          <v-btn
-            v-else-if="selectedRoutine.length > 0 && showAllExercises === true"
-            class="my-5"
-            text
-            @click.stop="showAllExercises = false"
-            >Show Less</v-btn
-          >
-        </v-container>
+        <RoutinePanel
+          :selected-day="selectedDay"
+          :selected-routine="selectedRoutine"
+        />
       </v-col>
       <!-- For the smAndUp goals section
         I wanted to do an scrollable panel
@@ -63,65 +26,10 @@
         doesn`t get too large. Will do in the future.
        -->
       <v-col v-if="$vuetify.breakpoint.mdAndUp == true" cols="3">
-        <h1>Goals</h1>
-        <AddGoal />
-        <v-row>
-          <v-col
-            v-for="goal in showAllGoals ? goals : goals.slice(0, 6)"
-            :key="goal.id"
-            cols="6"
-          >
-            <GoalCard :goal="goal" />
-          </v-col>
-        </v-row>
-        <v-row justify="end">
-          <v-btn
-            v-if="goals.length > 6 && showAllGoals === false"
-            text
-            class="my-5"
-            @click.stop="showAllGoals = true"
-            >Show All</v-btn
-          >
-          <v-btn
-            v-else-if="goals.length > 6 && showAllGoals === true"
-            text
-            class="my-5"
-            @click.stop="showAllGoals = false"
-            >Show Less</v-btn
-          >
-        </v-row>
+        <GoalsPanel />
       </v-col>
-      <v-row v-else justify="center">
-        <v-col cols="11">
-          <h1>Goals</h1>
-          <AddGoal />
-          <v-row justify="start">
-            <v-col
-              v-for="goal in showAllGoals ? goals : goals.slice(0, 6)"
-              :key="goal.id"
-              cols="6"
-              sm="4"
-            >
-              <GoalCard :goal="goal" />
-            </v-col>
-          </v-row>
-          <v-row justify="center">
-            <v-btn
-              v-if="goals.length > 6 && showAllGoals === false"
-              text
-              class="my-5"
-              @click.stop="showAllGoals = true"
-              >Show All</v-btn
-            >
-            <v-btn
-              v-else-if="goals.length > 6 && showAllGoals === true"
-              text
-              class="my-5"
-              @click.stop="showAllGoals = false"
-              >Show Less</v-btn
-            >
-          </v-row>
-        </v-col>
+      <v-row v-else>
+        <GoalsPanel />
       </v-row>
     </v-row>
   </v-container>
@@ -129,15 +37,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import HorizontalExercises from '../components/HorizontalExercises.vue'
-import GoalCard from '../components/index/GoalCard.vue'
-import AddGoal from '../components/index/AddGoal.vue'
+import DaysPanel from '../components/index/DaysPanel.vue'
+import RoutinePanel from '../components/index/RoutinePanel.vue'
+import GoalsPanel from '../components/index/GoalsPanel.vue'
 
 export default {
   components: {
-    HorizontalExercises,
-    GoalCard,
-    AddGoal,
+    DaysPanel,
+    RoutinePanel,
+    GoalsPanel,
   },
   data() {
     return {
@@ -150,42 +58,20 @@ export default {
         'saturday',
         'sunday',
       ],
-      selectedDay: 'monday',
+      selectedDay: '',
       selectedRoutine: [],
-      showAllExercises: false,
-      showAllGoals: false,
-      firstOpened: true,
     }
   },
   computed: {
-    ...mapGetters(['routineByDay', 'goals']),
+    ...mapGetters(['routineByDay']),
   },
   created() {
     this.setNextDay()
-    try {
-      const routine = JSON.parse(
-        JSON.stringify(this.routineByDay(this.selectedDay))
-      )
-      this.selectedRoutine = routine.exercises
-    } catch {
-      // In case there's no routine for the day set it back to empty
-    }
   },
   methods: {
-    selectDay(day) {
-      this.firstOpened = false
+    onSelectDay({ day, routine }) {
       this.selectedDay = day
-      // Here I had problems with Vue observer, so don`t worry if seems complicated
-      try {
-        const routine = JSON.parse(
-          JSON.stringify(this.routineByDay(this.selectedDay))
-        )
-        this.selectedRoutine = routine.exercises
-      } catch {
-        // In case there's no routine for the day set it back to empty
-        this.selectedDay = day
-        this.selectedRoutine = []
-      }
+      this.selectedRoutine = routine
     },
     setNextDay() {
       const currentDay = this.days[new Date().getDay() - 1]
@@ -206,6 +92,7 @@ export default {
           // else just catch it
           if (routine.exercises.length > 0) {
             this.selectedDay = day
+            this.selectedRoutine = routine.exercises
             break
           }
         } catch {
