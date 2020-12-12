@@ -5,6 +5,7 @@
         <v-col cols="10">
           <v-text-field
             v-model="goalForm"
+            autocomplete="off"
             name="goal"
             label="New goal..."
           ></v-text-field>
@@ -31,8 +32,10 @@ export default {
   methods: {
     ...mapActions(['actAddGoal']),
     submitForm() {
-      this.actAddGoal(this.goalForm)
-      this.goalForm = ''
+      if (this.goalForm.trim() !== '') {
+        this.actAddGoal(this.goalForm)
+        this.goalForm = ''
+      }
     },
   },
 }

@@ -74,14 +74,6 @@ export default {
     GoalCard,
     AddGoal,
   },
-  props: {
-    goals: {
-      type: Array,
-      default: () => {
-        return []
-      },
-    },
-  },
   data() {
     return {
       showAllGoals: false,

@@ -192,8 +192,8 @@ export const actions = {
   actDeleteGoal({ commit }, id) {
     commit('deleteGoal', id)
   },
-  actEditGoal({ commit }, id) {
-    commit('editGoal', id)
+  actEditGoal({ commit }, newGoal) {
+    commit('editGoal', newGoal)
   },
   actChangeGoalState({ commit }, id) {
     commit('changeGoalState', id)
@@ -208,8 +208,9 @@ export const mutations = {
     const index = state.goals.findIndex((goal) => goal.id === id)
     state.goals.splice(index, 1)
   },
-  editGoal(state, id) {
-    console.log(id)
+  editGoal(state, newGoal) {
+    const index = state.goals.findIndex((goal) => goal.id === newGoal.id)
+    state.goals.splice(index, 1, newGoal)
   },
   changeGoalState(state, id) {
     const index = state.goals.findIndex((goal) => goal.id === id)

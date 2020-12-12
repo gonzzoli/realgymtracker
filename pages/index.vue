@@ -29,7 +29,9 @@
         <GoalsPanel />
       </v-col>
       <v-row v-else>
-        <GoalsPanel />
+        <v-col cols="12">
+          <GoalsPanel />
+        </v-col>
       </v-row>
     </v-row>
   </v-container>
@@ -95,9 +97,7 @@ export default {
             this.selectedRoutine = routine.exercises
             break
           }
-        } catch {
-          console.log(day + ' has no routine.')
-        }
+        } catch {}
       }
     },
   },
