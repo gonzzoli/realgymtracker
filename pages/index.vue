@@ -1,13 +1,17 @@
 <template>
   <v-container>
     <v-row>
-      <v-col v-if="$vuetify.breakpoint.name != 'xs'" cols="2">
+      <v-col
+        v-if="$vuetify.breakpoint.name != 'xs' && modifyingRoutine === false"
+        cols="2"
+      >
         <DaysPanel @daySelection="onSelectDay" />
       </v-col>
-      <v-row v-else>
+      <v-row v-else-if="modifyingRoutine === false">
         <DaysPanel @daySelection="onSelectDay" />
       </v-row>
       <v-col
+        v-if="modifyingRoutine === false"
         cols="12"
         offset-sm="1"
         offset-md="0"
@@ -18,17 +22,34 @@
         <RoutinePanel
           :selected-day="selectedDay"
           :selected-routine="selectedRoutine"
+          :modifying-routine="modifyingRoutine"
+          @startedModifying="modifyingRoutine = true"
+          @finishedModifying="modifyingRoutine = false"
         />
       </v-col>
+      <v-row v-else justify="center">
+        <v-col cols="12" sm="9" md="7" class="text-center">
+          <RoutinePanel
+            :selected-day="selectedDay"
+            :selected-routine="selectedRoutine"
+            :modifying-routine="modifyingRoutine"
+            @startedModifying="modifyingRoutine = true"
+            @finishedModifying="modifyingRoutine = false"
+          />
+        </v-col>
+      </v-row>
       <!-- For the smAndUp goals section
         I wanted to do an scrollable panel
         so that when opening all goals the page 
         doesn`t get too large. Will do in the future.
        -->
-      <v-col v-if="$vuetify.breakpoint.mdAndUp == true" cols="3">
+      <v-col
+        v-if="$vuetify.breakpoint.mdAndUp == true && modifyingRoutine === false"
+        cols="3"
+      >
         <GoalsPanel />
       </v-col>
-      <v-row v-else>
+      <v-row v-else-if="modifyingRoutine === false">
         <v-col cols="12">
           <GoalsPanel />
         </v-col>
@@ -62,6 +83,7 @@ export default {
       ],
       selectedDay: '',
       selectedRoutine: [],
+      modifyingRoutine: false,
     }
   },
   computed: {
@@ -74,6 +96,7 @@ export default {
     onSelectDay({ day, routine }) {
       this.selectedDay = day
       this.selectedRoutine = routine
+      console.log(this.selectedDay, this.selectedRoutine)
     },
     setNextDay() {
       const currentDay = this.days[new Date().getDay() - 1]

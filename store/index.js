@@ -5,100 +5,124 @@ export const state = () => ({
       exercises: [
         {
           name: 'bicycle',
-          duration: '5 min',
+          duration: 5,
+          id: 0,
         },
         {
           name: 'legs extension',
           sets: 3,
           reps: 10,
           weight: 20,
+          id: 1,
         },
         {
           name: 'squats',
           sets: 3,
           reps: 8,
           weight: 70,
+          id: 2,
         },
         {
           name: 'calf raises',
           sets: 3,
           reps: 15,
           weight: 35,
+          id: 3,
         },
         {
           name: 'side squats',
           sets: 3,
           reps: 20,
           weight: 12,
+          id: 4,
         },
         {
           name: 'lunges',
           sets: 3,
           reps: 10,
           weight: 20,
+          id: 5,
         },
         {
           name: 'arms warmup',
-          duration: '3min',
+          duration: 3,
+          id: 6,
         },
         {
           name: 'pull ups',
           sets: 3,
           reps: 10,
           weight: 0,
+          id: 7,
         },
         {
           name: 'chin ups',
           sets: 3,
           reps: 8,
           weight: 0,
+          id: 8,
         },
         {
           name: 'dips',
           sets: 3,
           reps: 10,
           weight: 20,
+          id: 9,
         },
         {
           name: 'crunches',
           sets: 3,
           reps: 10,
           weight: 0,
+          id: 10,
         },
         {
           name: 'side crunches',
           sets: 3,
           reps: 10,
           weight: 0,
+          id: 11,
         },
         {
           name: 'table',
           sets: 3,
-          duration: '1min',
+          duration: 1,
           weight: 0,
+          id: 12,
         },
         {
           name: 'leg raises',
           sets: 3,
           reps: 10,
           weight: 0,
+          id: 13,
         },
       ],
+    },
+    {
+      day: 'tuesday',
+      exercises: [],
     },
     {
       day: 'wednesday',
       exercises: [
         {
           name: 'bicycle',
-          duration: '5 min',
+          duration: 5,
+          id: 0,
         },
         {
           name: 'legs extension',
           sets: 3,
           reps: 10,
           weight: 20,
+          id: 1,
         },
       ],
+    },
+    {
+      day: 'thursday',
+      exercises: [],
     },
     {
       day: 'friday',
@@ -108,50 +132,66 @@ export const state = () => ({
           sets: 3,
           reps: 8,
           weight: 0,
+          id: 0,
         },
         {
           name: 'inclined barbell row',
           sets: 3,
           reps: 8,
           weight: 20,
+          id: 1,
         },
         {
           name: 'renegade row',
           sets: 3,
           reps: 10,
           weight: 7.5,
+          id: 2,
         },
         {
           name: 'front raises',
           sets: 3,
           reps: 10,
           weight: 7.5,
+          id: 3,
         },
         {
           name: 'militar press',
           sets: 3,
           reps: 10,
           weight: 15,
+          id: 4,
         },
         {
           name: 'rear delt fly',
           sets: 3,
           reps: 8,
           weight: 7.5,
+          id: 5,
         },
         {
           name: 'chin ups',
           sets: 3,
           reps: 8,
           weight: 0,
+          id: 6,
         },
         {
           name: 'dips',
           sets: 3,
           reps: 8,
           weight: 0,
+          id: 7,
         },
       ],
+    },
+    {
+      day: 'saturday',
+      exercises: [],
+    },
+    {
+      day: 'sunday',
+      exercises: [],
     },
   ],
   goals: [
@@ -186,6 +226,7 @@ export const getters = {
     return exercises[0]
   },
   goals: (state) => state.goals,
+  modifyRoutine: (state) => state.modifyRoutine,
 }
 
 export const actions = {
@@ -200,6 +241,19 @@ export const actions = {
   },
   actAddGoal({ commit }, goal) {
     commit('addGoal', goal)
+  },
+  actModifyRoutineMode({ commit }) {
+    commit('modifyRoutineMode')
+  },
+  // actDeleteExercise({ commit }, payload) {
+  //   commit('deleteExercise', payload)
+  // },
+  // actAddExercise({ commit }, exercise) {},
+  // takes in the routine with
+  // all deleted, added and modified exercises
+  // and sets it back to routine in state
+  actSetNewRoutine({ commit }, newRoutine) {
+    commit('setNewRoutine', newRoutine)
   },
 }
 
@@ -226,5 +280,17 @@ export const mutations = {
       goal,
       id: nextId,
     })
+  },
+  modifyRoutineMode(state) {
+    state.modifyRoutine = !state.modifyRoutine
+  },
+  setNewRoutine(state, newRoutine) {
+    const routineIndex = state.routines.findIndex(
+      (routine) => routine.day === newRoutine.day
+    )
+    console.log(routineIndex)
+    state.routines[routineIndex].exercises = newRoutine.exercises
+    console.log(state.routines[routineIndex].exercises)
+    console.log(state.routines)
   },
 }
