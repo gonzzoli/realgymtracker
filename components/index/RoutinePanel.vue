@@ -10,23 +10,23 @@
       </h3>
       <HorizontalExercises
         v-for="exercise in showAllExercises
-          ? copiedRoutine
-          : copiedRoutine.slice(0, 3)"
+          ? selectedRoutine
+          : selectedRoutine.slice(0, 3)"
         :key="exercise.name"
         :exercise="exercise"
         :modify-routine="modifyingRoutine"
       />
-      <h3 v-if="copiedRoutine.length === 0">No routine set for this day!</h3>
+      <h3 v-if="selectedRoutine.length === 0">No routine set for this day!</h3>
       <v-row justify="space-around">
         <v-btn
-          v-if="copiedRoutine.length > 3 && showAllExercises === false"
+          v-if="selectedRoutine.length > 3 && showAllExercises === false"
           text
           class="my-5"
           @click.stop="showAllExercises = true"
           >Show All</v-btn
         >
         <v-btn
-          v-else-if="copiedRoutine.length > 0 && showAllExercises === true"
+          v-else-if="selectedRoutine.length > 0 && showAllExercises === true"
           class="my-5"
           text
           @click.stop="showAllExercises = false"
@@ -93,24 +93,16 @@ export default {
     return {
       showAllExercises: false,
       firstOpened: true,
-      copiedRoutine: [],
+      copiedRoutine: this.selectedRoutine.slice(0),
     }
   },
   updated() {
     this.firstOpened = false
-    // this is the last thing
-    // successfully modifying the state, but needing to re-rendes
-    // the whole index component to get the updated routines
-    this.copiedRoutine = this.selectedRoutine.slice(
-      0,
-      this.selectedRoutine.length
-    )
   },
   methods: {
     ...mapActions(['actSetNewRoutine']),
     startedModifying() {
-      // dont know why but i have to press the modify button
-      // twice to get this working
+      this.copiedRoutine = this.selectedRoutine.slice(0)
       this.$emit('startedModifying')
       this.showAllExercises = true
     },
@@ -120,7 +112,7 @@ export default {
         exercises: this.copiedRoutine,
         day: this.selectedDay,
       })
-      this.$emit('finishedModifying')
+      this.$emit('finishedModifying', this.copiedRoutine)
     },
     addEmptyExercise(id) {
       try {

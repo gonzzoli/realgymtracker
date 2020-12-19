@@ -24,7 +24,6 @@
           :selected-routine="selectedRoutine"
           :modifying-routine="modifyingRoutine"
           @startedModifying="modifyingRoutine = true"
-          @finishedModifying="modifyingRoutine = false"
         />
       </v-col>
       <v-row v-else justify="center">
@@ -33,8 +32,7 @@
             :selected-day="selectedDay"
             :selected-routine="selectedRoutine"
             :modifying-routine="modifyingRoutine"
-            @startedModifying="modifyingRoutine = true"
-            @finishedModifying="modifyingRoutine = false"
+            @finishedModifying="updateRoutine"
           />
         </v-col>
       </v-row>
@@ -96,7 +94,6 @@ export default {
     onSelectDay({ day, routine }) {
       this.selectedDay = day
       this.selectedRoutine = routine
-      console.log(this.selectedDay, this.selectedRoutine)
     },
     setNextDay() {
       const currentDay = this.days[new Date().getDay() - 1]
@@ -122,6 +119,10 @@ export default {
           }
         } catch {}
       }
+    },
+    updateRoutine(routine) {
+      this.modifyingRoutine = false
+      this.selectedRoutine = routine
     },
   },
 }

@@ -245,10 +245,6 @@ export const actions = {
   actModifyRoutineMode({ commit }) {
     commit('modifyRoutineMode')
   },
-  // actDeleteExercise({ commit }, payload) {
-  //   commit('deleteExercise', payload)
-  // },
-  // actAddExercise({ commit }, exercise) {},
   // takes in the routine with
   // all deleted, added and modified exercises
   // and sets it back to routine in state
@@ -288,9 +284,8 @@ export const mutations = {
     const routineIndex = state.routines.findIndex(
       (routine) => routine.day === newRoutine.day
     )
-    console.log(routineIndex)
     state.routines[routineIndex].exercises = newRoutine.exercises
-    console.log(state.routines[routineIndex].exercises)
-    console.log(state.routines)
+    // console.log(state.routines[routineIndex].exercises)
+    // console.log(state.routines)
   },
 }
