@@ -6,6 +6,7 @@ export const state = () => ({
         {
           name: 'bicycle',
           duration: 5,
+          weight: 0,
           id: 0,
         },
         {
@@ -46,6 +47,7 @@ export const state = () => ({
         {
           name: 'arms warmup',
           duration: 3,
+          weight: 0,
           id: 6,
         },
         {
@@ -109,6 +111,7 @@ export const state = () => ({
         {
           name: 'bicycle',
           duration: 5,
+          weight: 0,
           id: 0,
         },
         {

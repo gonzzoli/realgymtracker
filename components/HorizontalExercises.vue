@@ -41,13 +41,12 @@
               autocomplete="off"
             ></v-text-field>
           </v-col>
-          <v-col cols="4" class="text-center">
+          <v-col cols="5" class="text-center">
             <v-row
               v-if="exercise.hasOwnProperty('reps')"
               justify="center"
               align="center"
               style="font-size: 15px"
-              class="mb-n5"
             >
               <v-col cols="4">
                 <v-text-field
@@ -70,9 +69,14 @@
                   autocomplete="off"
                 ></v-text-field>
               </v-col>
+              <v-col cols="1">
+                <v-btn fab x-small text class="ml-n4" @click="putTime">
+                  <v-icon>mdi-timer-outline</v-icon>
+                </v-btn>
+              </v-col>
             </v-row>
             <v-col v-else cols="12">
-              <v-row justify="center" align="center" class="mb-n5">
+              <v-row justify="center" align="center">
                 <v-col cols="4">
                   <v-text-field
                     v-model="newDuration"
@@ -81,24 +85,18 @@
                     min="0"
                     max="999"
                     autocomplete="off"
-                  ></v-text-field> </v-col
-              ></v-row>
+                  ></v-text-field>
+                </v-col>
+                <v-btn fab x-small text @click="putReps">
+                  <v-icon>mdi-counter</v-icon>
+                </v-btn></v-row
+              >
             </v-col>
-            <v-btn
-              x-small
-              fab
-              class="my-n3"
-              color="red accent-2"
-              @click.stop="deleteExercise"
-            >
-              <v-icon>mdi-minus</v-icon>
-            </v-btn>
           </v-col>
-          <v-col cols="4">
+          <v-col cols="3">
             <v-row justify="center">
               <v-col cols="6">
                 <v-text-field
-                  v-if="exercise.hasOwnProperty('weight')"
                   v-model="newWeight"
                   placeholder="Weight"
                   :class="{ 'mb-n4': showCheckMark }"
@@ -120,6 +118,17 @@
               </v-col>
             </v-row>
           </v-col>
+          <v-row justify="center" align="center">
+            <v-btn
+              x-small
+              fab
+              color="red accent-2"
+              class="mt-n8 mb-2"
+              @click.stop="deleteExercise"
+            >
+              <v-icon>mdi-minus</v-icon>
+            </v-btn>
+          </v-row>
         </v-row>
       </v-form>
     </v-card>
@@ -289,6 +298,17 @@ export default {
     },
     deleteExercise() {
       this.$emit('deleteExercise', this.exercise.id)
+    },
+    // in this two functions i should delete one property
+    // and add the other, but im not quite sure about
+    // to which exercise do those changes, if the prop
+    // or making a copy of the prop or something else
+    putReps() {
+      console.log(this.exercise)
+      this.exercise.duration = 35
+    },
+    putTime() {
+      console.log(this.exercise)
     },
   },
 }

@@ -119,12 +119,13 @@ export default {
         const index = this.copiedRoutine.findIndex(
           (exercise) => exercise.id === id
         )
-        const lastId = Number(
+        let lastId = Number(
           this.copiedRoutine
             .map((exercise) => exercise.id)
             .sort((a, b) => a - b)
             .reverse()[0]
         )
+        lastId = isNaN(lastId) ? 1 : lastId
         const exercise = {
           name: '',
           sets: '',
@@ -133,22 +134,7 @@ export default {
           id: lastId + 1,
         }
         this.copiedRoutine.splice(index + 1, 0, exercise)
-        console.log(this.copiedRoutine, this.selectedRoutine)
-      } catch {
-        const lastId = Number(
-          this.copiedRoutine
-            .map((exercise) => exercise.id)
-            .sort((a, b) => a - b)
-            .reverse()[0]
-        )
-        this.copiedRoutine.unshift({
-          name: '',
-          sets: '',
-          reps: '',
-          weight: '',
-          id: lastId + 1,
-        })
-      }
+      } catch {}
     },
     addExercise(newExercise) {
       const index = this.copiedRoutine.findIndex(
@@ -161,7 +147,6 @@ export default {
         (exercise) => exercise.id === id
       )
       this.copiedRoutine.splice(index, 1)
-      console.log(this.copiedRoutine)
     },
   },
 }
