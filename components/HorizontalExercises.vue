@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card :class="{ 'red accent-1': isIncomplete }">
+    <v-card :key="updater">
       <v-row v-if="modifyRoutine === false">
         <v-col cols="4">
           <v-card-title class="text-left">{{
@@ -16,7 +16,9 @@
             ></v-card-text
           >
           <v-card-text v-else style="font-size: 15px"
-            ><strong>{{ exercise.duration }} min</strong></v-card-text
+            ><strong
+              >{{ exercise.sets }} x {{ exercise.duration }} min</strong
+            ></v-card-text
           >
         </v-col>
         <v-col cols="4">
@@ -31,74 +33,72 @@
           >
         </v-col>
       </v-row>
-      <v-form v-else>
+      <v-form v-else :class="{ 'red accent-1': isIncomplete }">
         <v-row justify="center" align="center">
           <v-col cols="4">
             <v-text-field
               v-model="newName"
-              placeholder="Name"
+              label="Name"
               class="ml-2"
               autocomplete="off"
             ></v-text-field>
           </v-col>
           <v-col cols="5" class="text-center">
-            <v-row
-              v-if="exercise.hasOwnProperty('reps')"
-              justify="center"
-              align="center"
-              style="font-size: 15px"
-            >
+            <v-row justify="center" align="center" style="font-size: 15px">
               <v-col cols="4">
                 <v-text-field
                   v-model="newSets"
                   type="number"
-                  placeholder="Sets"
+                  label="Sets"
                   min="0"
                   max="999"
                   autocomplete="off"
                 ></v-text-field>
               </v-col>
               <v-col cols="1">x</v-col>
-              <v-col cols="4">
+              <v-col v-if="newExercise.hasOwnProperty('reps')" cols="4">
                 <v-text-field
                   v-model="newReps"
                   type="number"
-                  placeholder="Reps"
+                  label="Reps"
                   min="0"
                   max="999"
                   autocomplete="off"
                 ></v-text-field>
               </v-col>
-              <v-col cols="1">
-                <v-btn fab x-small text class="ml-n4" @click="putTime">
+              <v-col v-else cols="4">
+                <v-text-field
+                  v-model="newDuration"
+                  type="number"
+                  label="Time"
+                  min="0"
+                  max="999"
+                  autocomplete="off"
+                ></v-text-field>
+              </v-col>
+              <v-col :key="updater" cols="1">
+                <v-btn
+                  v-if="newExercise.hasOwnProperty('reps')"
+                  fab
+                  x-small
+                  text
+                  class="ml-n4"
+                  @click="putTime"
+                >
                   <v-icon>mdi-timer-outline</v-icon>
+                </v-btn>
+                <v-btn v-else fab x-small text class="ml-n4" @click="putReps">
+                  <v-icon>mdi-counter</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
-            <v-col v-else cols="12">
-              <v-row justify="center" align="center">
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="newDuration"
-                    placeholder="Time"
-                    type="number"
-                    min="0"
-                    max="999"
-                    autocomplete="off"
-                  ></v-text-field>
-                </v-col>
-                <v-btn fab x-small text @click="putReps">
-                  <v-icon>mdi-counter</v-icon>
-                </v-btn></v-row
-              >
-            </v-col>
           </v-col>
           <v-col cols="3">
             <v-row justify="center">
               <v-col cols="6">
                 <v-text-field
                   v-model="newWeight"
-                  placeholder="Weight"
+                  label="Weight"
                   :class="{ 'mb-n4': showCheckMark }"
                   type="number"
                   min="0"
@@ -108,6 +108,7 @@
                 ></v-text-field>
                 <v-btn
                   v-if="showCheckMark"
+                  :key="updater"
                   icon
                   class="mb-n4"
                   color="success"
@@ -189,13 +190,14 @@ export default {
       repsChanged: false,
       weightChanged: false,
       durationChanged: false,
+      updater: 1,
     }
   },
   computed: {
     newExercise() {
-      if (this.exercise.duration === undefined) {
+      if (this.newDuration === undefined) {
         return {
-          name: this.newName,
+          name: this.newName.toLowerCase(),
           sets: Number(this.newSets),
           reps: Number(this.newReps),
           weight: Number(this.newWeight),
@@ -203,20 +205,24 @@ export default {
         }
       }
       return {
-        name: this.newName,
+        name: this.newName.toLowerCase(),
+        sets: Number(this.newSets),
         duration: Number(this.newDuration),
+        weight: Number(this.newWeight),
         id: Number(this.id),
       }
     },
     isIncomplete() {
-      if (
-        this.newName !== '' &&
-        this.newSets !== '' &&
-        this.newReps !== '' &&
-        this.newWeight !== ''
-      ) {
-        return false
-      } else if (this.newName !== '' && this.newDuration !== undefined) {
+      if (Object.prototype.hasOwnProperty.call(this.newExercise, 'reps')) {
+        if (
+          this.newName.length > 0 &&
+          Number(this.newSets) > 0 &&
+          Number(this.newReps) > 0 &&
+          Number(this.newWeight) >= 0
+        ) {
+          return false
+        }
+      } else if (this.newName.length > 0 && Number(this.newDuration) > 0) {
         return false
       }
       return true
@@ -237,6 +243,12 @@ export default {
     },
   },
   watch: {
+    // keep on working here
+    // you should set to true the incompleteExercises
+    // in parent, find a way to send that info
+    modifyRoutine(value) {
+      console.log('locoooo ' + value)
+    },
     newName(value) {
       const original = this.exercise.name
       if (original !== value) {
@@ -254,7 +266,8 @@ export default {
       }
     },
     newReps(value) {
-      const original = String(this.exercise.reps)
+      let original = this.exercise.reps
+      original = original === undefined ? '' : String(original)
       if (original !== value) {
         this.repsChanged = true
       } else {
@@ -270,14 +283,22 @@ export default {
       }
     },
     newDuration(value) {
-      const original = String(this.exercise.duration)
+      let original = this.exercise.duration
+      original = original === undefined ? '' : String(original)
       if (original !== value) {
         this.durationChanged = true
       } else {
         this.durationChanged = false
       }
+      // console.log(
+      //   this.repsChanged,
+      //   this.durationChanged,
+      //   this.newDuration,
+      //   this.isIncomplete
+      // )
     },
   },
+
   methods: {
     ...mapActions(['actDeleteExercise']),
     capitalizeName(name) {
@@ -294,6 +315,7 @@ export default {
       this.$emit('addEmptyExercise', this.exercise.id)
     },
     addNewExercise() {
+      this.updater += 1
       this.$emit('addNewExercise', this.newExercise)
     },
     deleteExercise() {
@@ -304,11 +326,14 @@ export default {
     // to which exercise do those changes, if the prop
     // or making a copy of the prop or something else
     putReps() {
-      console.log(this.exercise)
-      this.exercise.duration = 35
+      this.newDuration = undefined
+      this.newReps = 0
+      this.updater += Math.random()
     },
     putTime() {
-      console.log(this.exercise)
+      this.newReps = undefined
+      this.newDuration = 0
+      this.updater += Math.random()
     },
   },
 }

@@ -56,6 +56,7 @@
           @addEmptyExercise="addEmptyExercise"
           @addNewExercise="addExercise"
           @deleteExercise="deleteExercise"
+          @isIncomplete="incompleteExercises = true"
         />
       </div>
       <v-btn class="my-5" @click.stop="finishedModifying">Done</v-btn>
@@ -94,6 +95,7 @@ export default {
       showAllExercises: false,
       firstOpened: true,
       copiedRoutine: this.selectedRoutine.slice(0),
+      incompleteExercises: false,
     }
   },
   updated() {
@@ -107,12 +109,16 @@ export default {
       this.showAllExercises = true
     },
     finishedModifying() {
-      this.showAllExercises = false
-      this.actSetNewRoutine({
-        exercises: this.copiedRoutine,
-        day: this.selectedDay,
-      })
-      this.$emit('finishedModifying', this.copiedRoutine)
+      if (!this.incompleteExercises) {
+        this.showAllExercises = false
+        this.actSetNewRoutine({
+          exercises: this.copiedRoutine,
+          day: this.selectedDay,
+        })
+        this.$emit('finishedModifying', this.copiedRoutine)
+      } else {
+        console.log('You got incomplete exercises in ther boi')
+      }
     },
     addEmptyExercise(id) {
       try {
